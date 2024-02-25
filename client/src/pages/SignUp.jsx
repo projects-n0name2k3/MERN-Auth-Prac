@@ -17,6 +17,7 @@ import {
   signUpSuccess,
 } from "../redux/user/userSlice";
 import { useEffect } from "react";
+import OAuth from "../components/OAuth";
 
 const SignUp = () => {
   usePageTitle("Sign Up");
@@ -39,6 +40,7 @@ const SignUp = () => {
   });
   useEffect(() => {
     if (currentUser) navigate("/");
+    dispatch(signUpFailure(null));
   }, []);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -129,16 +131,7 @@ const SignUp = () => {
               <span class="shrink px-1 pb-1 text-slate-400 text-sm">Or</span>
               <div class="grow border-b border-slate-400"></div>
             </div>
-            <Button
-              justify="space-between"
-              fullWidth
-              leftSection={<FcGoogle size={24} />}
-              rightSection={<span />}
-              mt="md"
-              variant="default"
-            >
-              <span className="text-gray-500">Continue with Google</span>
-            </Button>
+            <OAuth title="Continue with Google" />
           </Box>
         </div>
       </div>

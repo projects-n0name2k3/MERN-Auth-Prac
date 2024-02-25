@@ -16,6 +16,7 @@ const Header = () => {
       console.log(error);
     }
   };
+  console.log(currentUser.profilePicture);
   return (
     <div className="h-12 border-b-[1px]">
       <div className="max-w-[1440px] mx-auto h-full flex items-center justify-between">
@@ -26,15 +27,16 @@ const Header = () => {
           onClick={() => navigate("/")}
         />
         {currentUser ? (
-          <Menu shadow="md" width={150}>
+          <Menu shadow="md">
             <Menu.Target>
               <Avatar
                 src={currentUser.profilePicture}
                 className="cursor-pointer"
+                referrerPolicy="no-referrer"
               ></Avatar>
             </Menu.Target>
 
-            <Menu.Dropdown>
+            <Menu.Dropdown className="min-w-36">
               <Menu.Label>Hi {currentUser.username}</Menu.Label>
               <Menu.Divider />
               <Menu.Item>Profile</Menu.Item>

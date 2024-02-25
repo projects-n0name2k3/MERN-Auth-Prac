@@ -17,12 +17,13 @@ import {
   signInSuccess,
 } from "../redux/user/userSlice";
 import { useEffect } from "react";
+import OAuth from "../components/OAuth";
 const SignIn = () => {
   usePageTitle("Sign In");
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, error } = useSelector((state) => state.user);
   const form = useForm({
     initialValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -30,8 +31,13 @@ const SignIn = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (currentUser) navigate("/");
+    dispatch(signInFailure(null));
   }, []);
   const handleLogin = async (values) => {
+    if (values.email === "" && values.password === "") {
+      dispatch(signInFailure({ message: "Please enter your credentials" }));
+      return;
+    }
     try {
       dispatch(signInStart());
       const res = await fetch("/api/auth/login", {
@@ -62,6 +68,13 @@ const SignIn = () => {
             className="shadow-lg p-8 rounded-lg w-[440px] bg-white"
           >
             <h1 className="text-center text-2xl font-bold my-3">Login</h1>
+            {error && (
+              <div className="bg-red-100 p-3 my-4 rounded-lg">
+                <span className="text-sm font-medium text-red-500">
+                  {error.message}
+                </span>
+              </div>
+            )}
             <form
               onSubmit={form.onSubmit((values) => handleLogin(values))}
               className="space-y-4"
@@ -96,16 +109,7 @@ const SignIn = () => {
               <span class="shrink px-1 pb-1 text-slate-400 text-sm">Or</span>
               <div class="grow border-b border-slate-400"></div>
             </div>
-            <Button
-              justify="space-between"
-              fullWidth
-              leftSection={<FcGoogle size={24} />}
-              rightSection={<span />}
-              mt="md"
-              variant="default"
-            >
-              <span className="text-gray-500">Login with Google</span>
-            </Button>
+            <OAuth title="Login with Google" />
           </Box>
         </div>
       </div>
