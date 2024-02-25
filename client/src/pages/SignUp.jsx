@@ -94,7 +94,7 @@ const SignUp = () => {
               mt="md"
               variant="default"
             >
-              <span className="text-gray-500">Sign up with Google</span>
+              <span className="text-gray-500">Continue with Google</span>
             </Button>
           </Box>
         </div>

@@ -7,6 +7,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import "@mantine/core/styles.css";
 
 import { MantineProvider } from "@mantine/core";
+import Header from "./components/Header";
 const App = () => {
   return (
     <BrowserRouter>
@@ -15,6 +16,7 @@ const App = () => {
           fontFamily: "Montserrat",
         }}
       >
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<SignIn />} />
