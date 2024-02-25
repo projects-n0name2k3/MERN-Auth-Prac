@@ -2,7 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-
+import userRoutes from "./routes/user.route.js";
+import authRoutes from "./routes/auth.route.js";
 dotenv.config();
 mongoose
   .connect(process.env.MONGO_URL)
@@ -18,6 +19,9 @@ app.use(cookieParser());
 app.listen(3002, () => {
   console.log("Server listening on 3002");
 });
+
+app.use("/api/user", userRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use((error, req, res, next) => {
   const statusCode = error.statusCode || 500;

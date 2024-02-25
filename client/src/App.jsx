@@ -24,6 +24,7 @@ const App = () => {
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Home />} />
           </Route>
+          <Route path="*" element={<Home />} />
         </Routes>
       </MantineProvider>
     </BrowserRouter>

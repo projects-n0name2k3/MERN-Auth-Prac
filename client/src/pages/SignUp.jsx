@@ -8,11 +8,19 @@ import {
 } from "@mantine/core";
 import usePageTitle from "../hooks/useTitle";
 import { useForm } from "@mantine/form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signUpFailure,
+  signUpStart,
+  signUpSuccess,
+} from "../redux/user/userSlice";
+import { useEffect } from "react";
 
 const SignUp = () => {
   usePageTitle("Sign Up");
+  const { currentUser, error } = useSelector((state) => state.user);
   const form = useForm({
     initialValues: {
       email: "",
@@ -29,6 +37,32 @@ const SignUp = () => {
         /^[A-Za-z0-9]{6,}$/.test(value) ? null : "Invalid password",
     },
   });
+  useEffect(() => {
+    if (currentUser) navigate("/");
+  }, []);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleSignUp = async (values) => {
+    try {
+      dispatch(signUpStart());
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signUpFailure(data));
+        return;
+      }
+      dispatch(signUpSuccess());
+      navigate("/login");
+    } catch (error) {
+      dispatch(signUpFailure(error));
+    }
+  };
   return (
     <>
       <div className="bg-gray-100 font-sans">
@@ -38,8 +72,17 @@ const SignUp = () => {
             className="shadow-lg p-8 rounded-lg w-[440px] bg-white"
           >
             <h1 className="text-center text-2xl font-bold my-3">Sign Up</h1>
+
+            {error && (
+              <div className="bg-red-100 p-3 my-4 rounded-lg">
+                <span className="text-sm font-medium text-red-500">
+                  {error.message}
+                </span>
+              </div>
+            )}
+
             <form
-              onSubmit={form.onSubmit((values) => console.log(values))}
+              onSubmit={form.onSubmit((values) => handleSignUp(values))}
               className="space-y-4"
             >
               <TextInput

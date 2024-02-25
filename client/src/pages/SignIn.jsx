@@ -8,23 +8,51 @@ import {
 } from "@mantine/core";
 import usePageTitle from "../hooks/useTitle";
 import { useForm } from "@mantine/form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../redux/user/userSlice";
+import { useEffect } from "react";
 const SignIn = () => {
   usePageTitle("Sign In");
+  const { currentUser } = useSelector((state) => state.user);
   const form = useForm({
     initialValues: {
       username: "",
       password: "",
     },
-
-    validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-      password: (value) =>
-        /^[A-Za-z0-9]{6,}$/.test(value) ? null : "Invalid password",
-    },
   });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (currentUser) navigate("/");
+  }, []);
+  const handleLogin = async (values) => {
+    try {
+      dispatch(signInStart());
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signInFailure(data));
+        return;
+      }
+      dispatch(signInSuccess(data));
+      navigate("/");
+    } catch (error) {
+      dispatch(signInFailure(error));
+    }
+  };
+
   return (
     <>
       <div className="bg-gray-100 font-sans">
@@ -35,11 +63,10 @@ const SignIn = () => {
           >
             <h1 className="text-center text-2xl font-bold my-3">Login</h1>
             <form
-              onSubmit={form.onSubmit((values) => console.log(values))}
+              onSubmit={form.onSubmit((values) => handleLogin(values))}
               className="space-y-4"
             >
               <TextInput
-                withAsterisk
                 label="Email"
                 placeholder="your@email.com"
                 {...form.getInputProps("email")}
@@ -47,7 +74,6 @@ const SignIn = () => {
               />
 
               <PasswordInput
-                withAsterisk
                 label="Password"
                 placeholder="Enter your Password"
                 {...form.getInputProps("password")}
