@@ -2,10 +2,20 @@ import React from "react";
 import logo from "../assets/broadcast.svg";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Button, Menu } from "@mantine/core";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { signOutSuccess } from "../redux/user/userSlice";
 const Header = () => {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const handleSignOut = async () => {
+    try {
+      await fetch("./api/auth/logout");
+      dispatch(signOutSuccess());
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="h-12 border-b-[1px]">
       <div className="max-w-[1440px] mx-auto h-full flex items-center justify-between">
@@ -29,7 +39,9 @@ const Header = () => {
               <Menu.Divider />
               <Menu.Item>Profile</Menu.Item>
               <Menu.Divider />
-              <Menu.Item color="red">Sign Out</Menu.Item>
+              <Menu.Item color="red" onClick={handleSignOut}>
+                Sign Out
+              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         ) : (
