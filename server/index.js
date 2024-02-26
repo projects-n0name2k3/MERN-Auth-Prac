@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
+import nodemailer from "nodemailer";
 dotenv.config();
 mongoose
   .connect(process.env.MONGO_URL)

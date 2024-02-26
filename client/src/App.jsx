@@ -8,6 +8,7 @@ import "@mantine/core/styles.css";
 
 import { MantineProvider } from "@mantine/core";
 import Header from "./components/Header";
+import ForgotPassword from "./pages/ForgotPassword";
 const App = () => {
   return (
     <BrowserRouter>
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/register" element={<SignUp />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Home />} />
           </Route>

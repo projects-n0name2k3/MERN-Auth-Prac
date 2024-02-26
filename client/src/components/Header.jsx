@@ -16,7 +16,6 @@ const Header = () => {
       console.log(error);
     }
   };
-  console.log(currentUser.profilePicture);
   return (
     <div className="h-12 border-b-[1px]">
       <div className="max-w-[1440px] mx-auto h-full flex items-center justify-between">

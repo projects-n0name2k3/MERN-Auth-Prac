@@ -98,9 +98,15 @@ const SignIn = () => {
                 </Button>
               </Group>
             </form>
-            <p className="text-sm text-center mt-4">
+            <Link
+              className="text-[13px] hover:opacity-60 text-blue-500"
+              to={"/forgotpassword"}
+            >
+              Forgotten password?
+            </Link>
+            <p className="text-sm text-center mt-4 ">
               Dont have an account?{" "}
-              <Link to={"/register"} className="text-blue-500">
+              <Link to={"/register"} className="text-blue-500 hover:opacity-60">
                 Signup
               </Link>
             </p>
