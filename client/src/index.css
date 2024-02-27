@@ -4,3 +4,16 @@
 @layer tailwind {
     @tailwind base;
 }
+
+.mantine-Modal-content {
+    min-width: 500px;
+
+}
+
+.mantine-Modal-body {
+    padding: 0;
+}
+
+.mantine-Modal-header {
+    padding: 6px 0px 6px 8px;
+}

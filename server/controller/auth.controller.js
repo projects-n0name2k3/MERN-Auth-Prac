@@ -110,13 +110,23 @@ export const forgotpassword = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Email not found" });
     }
-    if (
-      existedUser.wrongCount > 5 &&
-      Date.now() - existedUser.lastWrongAttempt < 3600000
-    ) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Please try again later!" });
+    if (existedUser.wrongCount > 5) {
+      if (Date.now() - existedUser.lastWrongAttempt < 3600000) {
+        return res
+          .status(403)
+          .json({ success: false, message: "Please try again later!" });
+      } else {
+        await User.findByIdAndUpdate(
+          existedUser._id,
+          {
+            $set: {
+              wrongCount: 0,
+              lastWrongAttempt: Date.now() - 360000000,
+            },
+          },
+          { new: true }
+        );
+      }
     }
     const OTPCode = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
     const hashedOTPCode = bcryptjs.hashSync(OTPCode.toString(), 10);
@@ -180,13 +190,23 @@ export const verifyOTP = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Email not found" });
     }
-    if (
-      existedUser.wrongCount > 5 &&
-      Date.now() - existedUser.lastWrongAttempt < 3600000
-    ) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Please try again later!" });
+    if (existedUser.wrongCount > 5) {
+      if (Date.now() - existedUser.lastWrongAttempt < 3600000) {
+        return res
+          .status(403)
+          .json({ success: false, message: "Please try again later!" });
+      } else {
+        await User.findByIdAndUpdate(
+          existedUser._id,
+          {
+            $set: {
+              wrongCount: 0,
+              lastWrongAttempt: Date.now() - 360000000,
+            },
+          },
+          { new: true }
+        );
+      }
     }
     const validOTP = bcryptjs.compareSync(OTP.toString(), existedUser.OTPcode);
     if (!validOTP) {

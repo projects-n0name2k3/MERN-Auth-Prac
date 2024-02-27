@@ -12,6 +12,7 @@ const Header = () => {
     try {
       await fetch("./api/auth/logout");
       dispatch(signOutSuccess());
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
@@ -38,7 +39,9 @@ const Header = () => {
             <Menu.Dropdown className="min-w-36">
               <Menu.Label>Hi {currentUser.username}</Menu.Label>
               <Menu.Divider />
-              <Menu.Item>Profile</Menu.Item>
+              <Menu.Item onClick={() => navigate("/profile")}>
+                Profile
+              </Menu.Item>
               <Menu.Divider />
               <Menu.Item color="red" onClick={handleSignOut}>
                 Sign Out

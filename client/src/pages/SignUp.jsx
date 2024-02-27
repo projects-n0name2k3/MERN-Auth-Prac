@@ -33,7 +33,7 @@ const SignUp = () => {
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       username: (value) =>
-        /^[A-Za-z0-9]{6,}$/.test(value) ? null : "Invalid username",
+        /^[A-Za-z0-9\s]{6,}$/.test(value) ? null : "Invalid username",
       password: (value) =>
         /^[A-Za-z0-9]{6,}$/.test(value) ? null : "Invalid password",
     },
@@ -92,7 +92,6 @@ const SignUp = () => {
                 label="Email"
                 placeholder="your@email.com"
                 {...form.getInputProps("email")}
-                className="placeholder-black"
               />
 
               <TextInput
