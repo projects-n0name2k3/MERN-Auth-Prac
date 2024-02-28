@@ -14,7 +14,7 @@ const checkExistedUser = async (field) => {
   return true;
 };
 export const editProfile = async (req, res) => {
-  const { email, username, password } = req.body;
+  const { email, username, password, profilePicture } = req.body;
   if (req.user.id !== req.params.id) {
     return res
       .status(403)
@@ -23,35 +23,40 @@ export const editProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (email) {
-      const emailCheck = await checkExistedUser({ email: email });
-      if (emailCheck !== true) {
-        return res.status(409).json(emailCheck);
+      if (email !== user.email) {
+        const emailCheck = await checkExistedUser({ email: email });
+        if (emailCheck !== true) {
+          return res.status(409).json(emailCheck);
+        }
       }
       user.email = email;
     }
     if (username) {
-      const usernameCheck = await checkExistedUser({ username: username });
-      if (usernameCheck !== true) {
-        return res.status(409).json(usernameCheck);
+      if (username !== user.username) {
+        const usernameCheck = await checkExistedUser({ username: username });
+        if (usernameCheck !== true) {
+          return res.status(409).json(usernameCheck);
+        }
       }
       user.username = username;
     }
-    if (password && password.trim().length >= 6) {
-      const hashedPassword = bcryptjs.hashSync(password, 10);
-      user.password = hashedPassword;
-    } else {
-      return res
-        .status(403)
-        .json({
+    if (password) {
+      if (password.trim().length >= 6) {
+        const hashedPassword = bcryptjs.hashSync(password, 10);
+        user.password = hashedPassword;
+      } else {
+        return res.status(403).json({
           success: false,
-          message: "Password must be has atleast 6 characters",
+          message: "Password must be has atleast 6 characters a",
         });
+      }
+    }
+    if (profilePicture) {
+      user.profilePicture = profilePicture;
     }
     await user.save();
-    console.log(user);
-    res
-      .status(200)
-      .json({ success: true, message: "Profile updated successfully" });
+    const { password: hashedPassword, ...rest } = user._doc;
+    res.status(200).json(rest);
   } catch (error) {
     res.status(500).json({
       success: false,
