@@ -8,21 +8,91 @@ import {
   Menu,
   Modal,
   PasswordInput,
+  Progress,
   TextInput,
 } from "@mantine/core";
-import { useSelector } from "react-redux";
+import {
+  getStorage,
+  uploadBytesResumable,
+  ref,
+  getDownloadURL,
+} from "firebase/storage";
+import { app } from "../firebase";
+import { useDispatch, useSelector } from "react-redux";
 import { MdModeEdit, MdOutlineRemoveRedEye } from "react-icons/md";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
 import { modals } from "@mantine/modals";
+import { checkPassword } from "../utils/helper";
+import {
+  editProfileFailure,
+  editProfileStart,
+  editProfileSuccess,
+} from "../redux/user/userSlice";
 const Profile = () => {
   usePageTitle("Profile");
   const { currentUser } = useSelector((state) => state.user);
   const [image, setImage] = useState(undefined);
+  const [preImage, setPreImage] = useState(undefined);
+  const [preImageSrc, setPreImageSrc] = useState(undefined);
+  const [imageSrc, setImageSrc] = useState(undefined);
   const imgRef = useRef(null);
+  const [imagePercentage, setImagePercentage] = useState(undefined);
+  const [imageError, setImageError] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const deactiveBtn = useRef(null);
+  const [isChanged, setIsChanged] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        setPreImage(e.target.result); // Update the state with the image source
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+  const handleFileUpload = (image) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
+
+      const fileName = new Date().getTime() + image.name;
+
+      const storageRef = ref(storage, fileName);
+
+      const uploadTask = uploadBytesResumable(storageRef, image);
+
+      uploadTask.on(
+        "state_changed",
+
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
+          setImagePercentage(Math.round(progress));
+        },
+
+        (error) => {
+          setImageError(true);
+
+          reject(error);
+        },
+
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImageSrc(downloadURL);
+
+            resolve(downloadURL); // Resolve the promise with the downloadURL
+          });
+        }
+      );
+    });
+  };
 
   const form = useForm({
     initialValues: {
@@ -37,26 +107,9 @@ const Profile = () => {
         /^[A-Za-z0-9\s]{6,}$/.test(value)
           ? null
           : "Username must be has atleast 6 characters",
-      password: (value) =>
-        /^[A-Za-z0-9]{6,}$/.test(value)
-          ? null
-          : "Password must be has atleast 6 characters",
     },
   });
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        setImage(e.target.result); // Update the state with the image source
-      };
-
-      reader.readAsDataURL(file);
-    }
-  };
   const navigate = useNavigate();
   useEffect(() => {
     if (!currentUser) {
@@ -68,6 +121,57 @@ const Profile = () => {
       username: currentUser?.username,
     });
   }, []);
+
+  const handleEditProfile = async (values, image) => {
+    try {
+      dispatch(editProfileStart());
+      if (values.password.length > 0 && !checkPassword(values.password)) {
+        form.setErrors({
+          password: "Password is shorter than 6 characters or invalid",
+        });
+        return;
+      }
+
+      if (image) {
+        if (image.name !== preImageSrc) {
+          const downloadURL = await handleFileUpload(image);
+          const res = await fetch(`/api/user/edit/${currentUser._id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ...values, profilePicture: downloadURL }),
+          });
+          const data = await res.json();
+          if (data.success === false) {
+            dispatch(editProfileFailure(data));
+            return;
+          }
+          dispatch(editProfileSuccess(data));
+          setPreImageSrc(image.name);
+        } else {
+          console.log("Duplicate image");
+          return;
+        }
+      }
+      const res = await fetch(`/api/user/edit/${currentUser._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(editProfileFailure(data));
+        return;
+      }
+      dispatch(editProfileSuccess(data));
+    } catch (error) {
+      dispatch(editProfileFailure(error));
+    }
+  };
+
   return (
     <div className="bg-gray-100 font-sans">
       <div className="max-w-[1440px] mx-auto h-[calc(100vh-48px)] flex gap-4 items-center justify-center">
@@ -77,17 +181,25 @@ const Profile = () => {
             ref={imgRef}
             hidden
             accept="image/*"
-            onChange={handleFileChange}
+            onChange={(e) => {
+              setImage(e.target.files[0]);
+              handleFileChange(e);
+            }}
           />
           <Menu shadow="md">
             <Menu.Target>
               <Avatar
-                src={image || currentUser?.profilePicture}
+                src={preImage || imageSrc || currentUser?.profilePicture}
                 className="cursor-pointer relative border border-slate-300"
                 size="xl"
               ></Avatar>
             </Menu.Target>
-
+            {imagePercentage < 100 && imagePercentage > 0 && (
+              <div className="w-full flex items-center justify-center flex-col">
+                <span className="text-sm">Uploading...</span>
+                <Progress value={imagePercentage} className="w-[40%] my-2" />
+              </div>
+            )}
             <Menu.Dropdown className="min-w-36">
               <Menu.Item leftSection={<MdOutlineRemoveRedEye />} onClick={open}>
                 View avatar
@@ -111,7 +223,9 @@ const Profile = () => {
           <Divider my="md" className="w-full" />
 
           <form
-            onSubmit={form.onSubmit((values) => handleSignUp(values))}
+            onSubmit={form.onSubmit((values) =>
+              handleEditProfile(values, image)
+            )}
             className="space-y-4 w-[70%]"
           >
             <TextInput label="Email" {...form.getInputProps("email")} />
@@ -121,7 +235,17 @@ const Profile = () => {
               {...form.getInputProps("password")}
             />
 
-            <Button type="submit" fullWidth>
+            <Button
+              type="submit"
+              fullWidth
+              disabled={
+                imagePercentage === undefined
+                  ? false
+                  : imagePercentage < 100
+                  ? true
+                  : false
+              }
+            >
               Save Changes
             </Button>
           </form>
@@ -182,7 +306,7 @@ const Profile = () => {
       </div>
       <Modal opened={opened} onClose={close}>
         <img
-          src={image || currentUser?.profilePicture}
+          src={preImage || imageSrc || currentUser?.profilePicture}
           alt=""
           className="w-full h-full object-fit"
         />
