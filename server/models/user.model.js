@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      minlength: 6,
+      min: 6,
     },
     email: {
       type: String,
@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      minlength: 6,
+      min: 6,
     },
     profilePicture: {
       type: String,
@@ -25,8 +25,8 @@ const userSchema = new mongoose.Schema(
     },
     OTPcode: {
       type: String,
-      minlength: 4,
-      maxlength: 4,
+      min: 4,
+      max: 4,
     },
     wrongCount: {
       type: Number,
