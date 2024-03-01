@@ -17,7 +17,7 @@ mongoose
 const app = express();
 app.use(
   cors({
-    origin: "https://slug-panel.onrender.com",
+    origin: "https://mern-auth-u15p.onrender.com",
   })
 );
 app.options("*", cors());
