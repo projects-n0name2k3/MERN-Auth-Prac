@@ -162,13 +162,16 @@ const Profile = () => {
           return;
         }
       }
-      const res = await fetch(`/api/user/edit/${currentUser._id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+      const res = await fetch(
+        `https://mern-auth-u15p.onrender.com/api/user/edit/${currentUser._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         dispatch(editProfileFailure(data));
