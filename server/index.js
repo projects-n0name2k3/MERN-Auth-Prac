@@ -17,7 +17,7 @@ mongoose
 const app = express();
 app.use(
   cors({
-    origin: "/",
+    origin: "https://mern-auth-prac-frontend.vercel.app",
     methods: ["GET", "POST", "PATCH"],
     credentials: true,
   })
