@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import nodemailer from "nodemailer";
+import cors from "cors";
 dotenv.config();
 mongoose
   .connect(process.env.MONGO_URL)
@@ -14,7 +15,13 @@ mongoose
   .catch((err) => console.log(err));
 
 const app = express();
-
+app.use(
+  cors({
+    origin: "/",
+    methods: ["GET", "POST", "PATCH"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 app.listen(3002, () => {
