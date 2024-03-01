@@ -17,11 +17,10 @@ mongoose
 const app = express();
 app.use(
   cors({
-    origin: "https://mern-auth-u15p.onrender.com",
-    methods: ["GET", "POST", "PATCH"],
-    credentials: true,
+    origin: "https://slug-panel.onrender.com",
   })
 );
+app.options("*", cors());
 app.use(express.json());
 app.use(cookieParser());
 app.listen(3002, () => {
