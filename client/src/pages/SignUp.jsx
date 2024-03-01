@@ -5,6 +5,7 @@ import {
   Group,
   PasswordInput,
   TextInput,
+  useComputedColorScheme,
 } from "@mantine/core";
 import usePageTitle from "../hooks/useTitle";
 import { useForm } from "@mantine/form";
@@ -18,10 +19,12 @@ import {
 } from "../redux/user/userSlice";
 import { useEffect } from "react";
 import OAuth from "../components/OAuth";
+import ErrorBanner from "../components/ErrorBanner";
 
 const SignUp = () => {
   usePageTitle("Sign Up");
   const { currentUser, error } = useSelector((state) => state.user);
+  const colorScheme = useComputedColorScheme();
   const form = useForm({
     initialValues: {
       email: "",
@@ -33,7 +36,9 @@ const SignUp = () => {
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       username: (value) =>
-        /^[A-Za-z0-9\s]{6,}$/.test(value) ? null : "Invalid username",
+        /^[\p{L}\s]+$/u.test(value)
+          ? null
+          : "Username must be has atleast 6 characters",
       password: (value) =>
         /^[A-Za-z0-9]{6,}$/.test(value) ? null : "Invalid password",
     },
@@ -67,21 +72,17 @@ const SignUp = () => {
   };
   return (
     <>
-      <div className="bg-gray-100 font-sans">
+      <Box className={`font-sans ${colorScheme !== "dark" && "bg-gray-100"}`}>
         <div className="max-w-[1440px] mx-auto h-screen grid place-content-center ">
           <Box
             mx="auto"
-            className="shadow-lg p-8 rounded-lg w-[440px] bg-white"
+            className={`shadow-lg p-8 rounded-lg w-[440px] ${
+              colorScheme === "dark" ? "border border-white/20" : "bg-white"
+            }`}
           >
             <h1 className="text-center text-2xl font-bold my-3">Sign Up</h1>
 
-            {error && (
-              <div className="bg-red-100 p-3 my-4 rounded-lg">
-                <span className="text-sm font-medium text-red-500">
-                  {error.message}
-                </span>
-              </div>
-            )}
+            {error && <ErrorBanner message={error.message} />}
 
             <form
               onSubmit={form.onSubmit((values) => handleSignUp(values))}
@@ -133,7 +134,7 @@ const SignUp = () => {
             <OAuth title="Continue with Google" />
           </Box>
         </div>
-      </div>
+      </Box>
     </>
   );
 };

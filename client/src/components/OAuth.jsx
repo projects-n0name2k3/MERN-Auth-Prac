@@ -1,4 +1,4 @@
-import { Button } from "@mantine/core";
+import { Button, useComputedColorScheme } from "@mantine/core";
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
@@ -9,11 +9,13 @@ import { useNavigate } from "react-router-dom";
 const OAuth = ({ title }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const colorScheme = useComputedColorScheme();
   const handleGoogleClick = async () => {
     try {
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
       const result = await signInWithPopup(auth, provider);
+
       const res = await fetch("api/auth/google", {
         method: "POST",
         headers: {
@@ -42,7 +44,13 @@ const OAuth = ({ title }) => {
       variant="default"
       onClick={handleGoogleClick}
     >
-      <span className="text-gray-500">{title}</span>
+      <span
+        className={`${
+          colorScheme === "dark" ? "text-white/70" : "text-gray-500"
+        }`}
+      >
+        {title}
+      </span>
     </Button>
   );
 };

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import usePageTitle from "../hooks/useTitle";
 import {
   Avatar,
+  Box,
   Button,
   Divider,
   Input,
@@ -10,6 +11,7 @@ import {
   PasswordInput,
   Progress,
   TextInput,
+  useComputedColorScheme,
 } from "@mantine/core";
 import {
   getStorage,
@@ -30,9 +32,10 @@ import {
   editProfileStart,
   editProfileSuccess,
 } from "../redux/user/userSlice";
+import ErrorBanner from "../components/ErrorBanner";
 const Profile = () => {
   usePageTitle("Profile");
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, error } = useSelector((state) => state.user);
   const [image, setImage] = useState(undefined);
   const [preImage, setPreImage] = useState(undefined);
   const [preImageSrc, setPreImageSrc] = useState(undefined);
@@ -42,7 +45,8 @@ const Profile = () => {
   const [imageError, setImageError] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const deactiveBtn = useRef(null);
-  const [isChanged, setIsChanged] = useState(false);
+  const colorScheme = useComputedColorScheme();
+
   const dispatch = useDispatch();
 
   const handleFileChange = (event) => {
@@ -104,7 +108,7 @@ const Profile = () => {
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       username: (value) =>
-        /^[A-Za-z0-9\s]{6,}$/.test(value)
+        /^[\p{L}\s]+$/u.test(value)
           ? null
           : "Username must be has atleast 6 characters",
     },
@@ -116,6 +120,7 @@ const Profile = () => {
       navigate("/login");
       return;
     }
+    dispatch(editProfileFailure(null));
     form.setValues({
       email: currentUser?.email,
       username: currentUser?.username,
@@ -173,9 +178,13 @@ const Profile = () => {
   };
 
   return (
-    <div className="bg-gray-100 font-sans">
-      <div className="max-w-[1440px] mx-auto h-[calc(100vh-48px)] flex gap-4 items-center justify-center">
-        <div className="w-[30%] shadow-lg rounded-lg bg-white flex flex-col items-center py-4">
+    <div className="font-sans">
+      <div className="max-w-[1440px] mx-auto h-[calc(100vh-56px)] flex gap-4 items-center justify-center">
+        <Box
+          className={`w-[30%] shadow-lg rounded-lg flex flex-col items-center py-4 ${
+            colorScheme === "dark" ? "border border-white/20" : "bg-white"
+          }`}
+        >
           <input
             type="file"
             ref={imgRef}
@@ -214,14 +223,22 @@ const Profile = () => {
             </Menu.Dropdown>
           </Menu>
 
-          <span className="text-gray-700 font-semibold text-md mt-4">
+          <span
+            className={`${
+              colorScheme !== "dark" && "text-gray-700"
+            } font-semibold text-md mt-4`}
+          >
             {currentUser?.username}
           </span>
-          <span className="text-gray-400 text-sm mt-4">
+          <span
+            className={`${
+              colorScheme !== "dark" && "text-gray-400"
+            } text-sm mt-4`}
+          >
             {currentUser?.email}
           </span>
           <Divider my="md" className="w-full" />
-
+          {error && <ErrorBanner message={error.message} />}
           <form
             onSubmit={form.onSubmit((values) =>
               handleEditProfile(values, image)
@@ -302,7 +319,7 @@ const Profile = () => {
               Deactivate
             </Button>
           </div>
-        </div>
+        </Box>
       </div>
       <Modal opened={opened} onClose={close}>
         <img

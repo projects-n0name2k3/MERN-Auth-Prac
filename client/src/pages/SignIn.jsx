@@ -1,15 +1,16 @@
 import {
   Box,
   Button,
-  Checkbox,
+  Center,
+  Container,
   Group,
   PasswordInput,
   TextInput,
+  useComputedColorScheme,
 } from "@mantine/core";
 import usePageTitle from "../hooks/useTitle";
 import { useForm } from "@mantine/form";
 import { Link, useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import {
   signInFailure,
@@ -18,9 +19,11 @@ import {
 } from "../redux/user/userSlice";
 import { useEffect } from "react";
 import OAuth from "../components/OAuth";
+import ErrorBanner from "../components/ErrorBanner";
 const SignIn = () => {
   usePageTitle("Sign In");
   const { currentUser, error } = useSelector((state) => state.user);
+  const colorScheme = useComputedColorScheme();
   const form = useForm({
     initialValues: {
       email: "",
@@ -58,23 +61,20 @@ const SignIn = () => {
       dispatch(signInFailure(error));
     }
   };
-
   return (
     <>
-      <div className="bg-gray-100 font-sans">
-        <div className="max-w-[1440px] mx-auto h-screen grid place-content-center ">
+      <Box className={`font-sans ${colorScheme !== "dark" && "bg-gray-100"}`}>
+        <Center className="max-w-[1440px] mx-auto h-screen grid place-content-center ">
           <Box
-            mx="auto"
-            className="shadow-lg p-8 rounded-lg w-[440px] bg-white"
+            mx={"auto"}
+            className={`shadow-xl p-8 rounded-lg w-[440px] ${
+              colorScheme === "dark" ? "border border-white/20" : "bg-white"
+            }`}
           >
-            <h1 className="text-center text-2xl font-bold my-3">Login</h1>
-            {error && (
-              <div className="bg-red-100 p-3 my-4 rounded-lg">
-                <span className="text-sm font-medium text-red-500">
-                  {error.message}
-                </span>
-              </div>
-            )}
+            <h1 className="text-center text-2xl font-bold my-3 dark:text-white">
+              Login
+            </h1>
+            {error && <ErrorBanner message={error.message} />}
             <form
               onSubmit={form.onSubmit((values) => handleLogin(values))}
               className="space-y-4"
@@ -83,7 +83,6 @@ const SignIn = () => {
                 label="Email"
                 placeholder="your@email.com"
                 {...form.getInputProps("email")}
-                className="placeholder-black"
               />
 
               <PasswordInput
@@ -117,8 +116,8 @@ const SignIn = () => {
             </div>
             <OAuth title="Login with Google" />
           </Box>
-        </div>
-      </div>
+        </Center>
+      </Box>
     </>
   );
 };

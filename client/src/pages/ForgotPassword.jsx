@@ -7,6 +7,7 @@ import {
   PinInput,
   TextInput,
   Tooltip,
+  useComputedColorScheme,
 } from "@mantine/core";
 import usePageTitle from "../hooks/useTitle";
 import { useForm } from "@mantine/form";
@@ -25,6 +26,8 @@ const ForgotPassword = () => {
   usePageTitle("Forget Password");
   const { currentUser, error } = useSelector((state) => state.user);
   const [isSuccess, setIsSuccess] = useState(false);
+  const colorScheme = useComputedColorScheme();
+
   const [isVerified, setIsVerified] = useState(false);
   const [isResended, setIsResended] = useState(false);
   const [countdown, setCountdown] = useState(30);
@@ -59,6 +62,7 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (currentUser) navigate("/");
+
     dispatch(signInFailure(null));
   }, []);
 
@@ -176,12 +180,16 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <div className="bg-gray-100 font-sans">
-        <div className="max-w-[1440px] mx-auto h-screen grid place-content-center ">
+      <div className={` ${colorScheme !== "dark" && "bg-gray-100"} font-sans`}>
+        <div
+          className={`max-w-[1440px] mx-auto h-screen grid place-content-center `}
+        >
           {isSuccess ? (
             <Box
               mx="auto"
-              className="shadow-lg p-8 rounded-lg w-[440px] bg-white "
+              className={`shadow-lg p-8 rounded-lg w-[440px]  ${
+                colorScheme === "dark" ? "border border-white/20" : "bg-white"
+              }`}
             >
               <Tooltip label="Back">
                 <ActionIcon
@@ -198,7 +206,13 @@ const ForgotPassword = () => {
                 Enter your new password
               </p>
               {error && (
-                <div className="bg-red-100 p-3 my-4 rounded-lg">
+                <div
+                  className={`${
+                    colorScheme === "dark"
+                      ? "border border-red-500"
+                      : "bg-red-100"
+                  } p-3 my-4 rounded-lg`}
+                >
                   <span className="text-sm font-medium text-red-500">
                     {error.message}
                   </span>
@@ -259,13 +273,21 @@ const ForgotPassword = () => {
           ) : (
             <Box
               mx="auto"
-              className="shadow-lg p-8 rounded-lg w-[440px] bg-white"
+              className={`shadow-lg p-8 rounded-lg w-[440px] ${
+                colorScheme === "dark" ? "border border-white/20" : "bg-white"
+              }`}
             >
               <h1 className="text-center text-2xl font-bold my-3">
                 Find Your Account
               </h1>
               {error && (
-                <div className="bg-red-100 p-3 my-4 rounded-lg">
+                <div
+                  className={`${
+                    colorScheme === "dark"
+                      ? "border border-red-500"
+                      : "bg-red-100"
+                  } p-3 my-4 rounded-lg`}
+                >
                   <span className="text-sm font-medium text-red-500">
                     {error.message}
                   </span>
@@ -286,7 +308,9 @@ const ForgotPassword = () => {
                 <Group justify="flex-end" mt="md">
                   <Button
                     variant="outline"
-                    className="border-slate-300 text-slate-500"
+                    className={`border-slate-300 ${
+                      colorScheme !== "dark" && "text-slate-500"
+                    }`}
                     onClick={() => navigate("/login")}
                   >
                     Back

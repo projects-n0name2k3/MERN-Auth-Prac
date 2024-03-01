@@ -5,6 +5,7 @@
     @tailwind base;
 }
 
+
 .mantine-Modal-content {
     min-width: 500px;
 

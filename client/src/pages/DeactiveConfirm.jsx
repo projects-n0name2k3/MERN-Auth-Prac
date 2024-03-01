@@ -1,4 +1,9 @@
-import { Button, Divider, PasswordInput } from "@mantine/core";
+import {
+  Button,
+  Divider,
+  PasswordInput,
+  useComputedColorScheme,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +16,8 @@ import {
 
 const DeactiveConfirm = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const colorScheme = useComputedColorScheme();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const form = useForm({
@@ -50,11 +57,21 @@ const DeactiveConfirm = () => {
     }
   };
   return (
-    <div className="bg-slate-100 h-[calc(100vh-48px)] grid place-content-center">
-      <div className="max-w-[1440px] w-[500px] min-h-48 shadow-lg rounded-lg bg-white p-3 flex flex-col items-center gap-4">
+    <div
+      className={`${
+        colorScheme !== "dark" && "bg-slate-100"
+      } h-[calc(100vh-56px)] grid place-content-center`}
+    >
+      <div
+        className={`max-w-[1440px] w-[500px] min-h-48 shadow-lg rounded-lg ${
+          colorScheme === "dark" && "border border-white/20"
+        } p-3 flex flex-col items-center gap-4`}
+      >
         <h1 className="text-center text-2xl ">Confirm access</h1>
         <Divider className="w-full" />
-        <span className="text-sm text-slate-500">
+        <span
+          className={`text-sm ${colorScheme !== "dark" && "text-slate-500"}`}
+        >
           To confirm deactive your account please type your password below
         </span>
         <form
@@ -70,7 +87,7 @@ const DeactiveConfirm = () => {
 
           <div className="flex items-center gap-4">
             <Button
-              variant="transparent"
+              variant={colorScheme === "dark" ? "outline" : "transparent"}
               color="gray"
               onClick={() => navigate(-1)}
             >
