@@ -52,13 +52,16 @@ const SignUp = () => {
   const handleSignUp = async (values) => {
     try {
       dispatch(signUpStart());
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+      const res = await fetch(
+        "https://mern-auth-prac.vercel.app/api/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         dispatch(signUpFailure(data));

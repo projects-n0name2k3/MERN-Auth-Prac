@@ -38,13 +38,16 @@ const DeactiveConfirm = () => {
     }
     try {
       dispatch(deactiveStart());
-      const res = await fetch(`/api/user/deactive/${currentUser._id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...values, email: currentUser.email }),
-      });
+      const res = await fetch(
+        `https://mern-auth-prac.vercel.app/api/user/deactive/${currentUser._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...values, email: currentUser.email }),
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         dispatch(deactiveFailure(data));

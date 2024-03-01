@@ -74,13 +74,16 @@ const ForgotPassword = () => {
     try {
       dispatch(forgotStart());
       setTempEmail(values.email);
-      const res = await fetch(`/api/auth/forgotpassword`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+      const res = await fetch(
+        `https://mern-auth-prac.vercel.app/api/auth/forgotpassword`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         dispatch(forgotFailure(data));

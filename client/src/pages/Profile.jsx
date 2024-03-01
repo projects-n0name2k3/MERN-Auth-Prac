@@ -140,13 +140,16 @@ const Profile = () => {
       if (image) {
         if (image.name !== preImageSrc) {
           const downloadURL = await handleFileUpload(image);
-          const res = await fetch(`/api/user/edit/${currentUser._id}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ ...values, profilePicture: downloadURL }),
-          });
+          const res = await fetch(
+            `https://mern-auth-prac.vercel.app/api/user/edit/${currentUser._id}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ ...values, profilePicture: downloadURL }),
+            }
+          );
           const data = await res.json();
           if (data.success === false) {
             dispatch(editProfileFailure(data));

@@ -43,13 +43,16 @@ const SignIn = () => {
     }
     try {
       dispatch(signInStart());
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+      const res = await fetch(
+        "https://mern-auth-prac.vercel.app/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         dispatch(signInFailure(data));
