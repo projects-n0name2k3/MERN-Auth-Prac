@@ -18,9 +18,13 @@ const app = express();
 app.use(
   cors({
     origin: "https://mern-auth-u15p.onrender.com",
+
+    credentials: true, // Allow cookies and other credentials to be sent with the request
   })
 );
-app.options("*", cors());
+
+app.options("*", cors()); // Preflight request handling
+
 app.use(express.json());
 app.use(cookieParser());
 app.listen(3002, () => {
