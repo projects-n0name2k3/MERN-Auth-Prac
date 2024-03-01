@@ -39,7 +39,7 @@ const DeactiveConfirm = () => {
     try {
       dispatch(deactiveStart());
       const res = await fetch(
-        `https://mern-auth-prac.vercel.app/api/user/deactive/${currentUser._id}`,
+        `https://mern-auth-u15p.onrender.com/api/user/deactive/${currentUser._id}`,
         {
           method: "POST",
           headers: {

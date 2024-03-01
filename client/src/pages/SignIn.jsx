@@ -44,7 +44,7 @@ const SignIn = () => {
     try {
       dispatch(signInStart());
       const res = await fetch(
-        "https://mern-auth-prac.vercel.app/api/auth/login",
+        "https://mern-auth-u15p.onrender.com/api/auth/login",
         {
           method: "POST",
           headers: {

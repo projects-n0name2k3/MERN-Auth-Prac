@@ -53,7 +53,7 @@ const SignUp = () => {
     try {
       dispatch(signUpStart());
       const res = await fetch(
-        "https://mern-auth-prac.vercel.app/api/auth/register",
+        "https://mern-auth-u15p.onrender.com/api/auth/register",
         {
           method: "POST",
           headers: {

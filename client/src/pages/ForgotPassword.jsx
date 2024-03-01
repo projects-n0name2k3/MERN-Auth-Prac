@@ -75,7 +75,7 @@ const ForgotPassword = () => {
       dispatch(forgotStart());
       setTempEmail(values.email);
       const res = await fetch(
-        `https://mern-auth-prac.vercel.app/api/auth/forgotpassword`,
+        `https://mern-auth-u15p.onrender.com/api/auth/forgotpassword`,
         {
           method: "POST",
           headers: {

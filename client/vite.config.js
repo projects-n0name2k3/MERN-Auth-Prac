@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://mern-auth-prac.vercel.app",
+        target: "https://mern-auth-u15p.onrender.com",
         secure: false,
       },
     },

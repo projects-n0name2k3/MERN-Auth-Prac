@@ -141,7 +141,7 @@ const Profile = () => {
         if (image.name !== preImageSrc) {
           const downloadURL = await handleFileUpload(image);
           const res = await fetch(
-            `https://mern-auth-prac.vercel.app/api/user/edit/${currentUser._id}`,
+            `https://mern-auth-u15p.onrender.com/api/user/edit/${currentUser._id}`,
             {
               method: "PATCH",
               headers: {

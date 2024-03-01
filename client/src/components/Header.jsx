@@ -27,7 +27,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const handleSignOut = async () => {
     try {
-      await fetch("https://mern-auth-prac.vercel.app/api/auth/logout");
+      await fetch("https://mern-auth-u15p.onrender.com/api/auth/logout");
       dispatch(signOutSuccess());
       navigate("/login");
     } catch (error) {

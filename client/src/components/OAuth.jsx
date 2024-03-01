@@ -17,7 +17,7 @@ const OAuth = ({ title }) => {
       const result = await signInWithPopup(auth, provider);
 
       const res = await fetch(
-        "https://mern-auth-prac.vercel.app/api/auth/google",
+        "https://mern-auth-u15p.onrender.com/api/auth/google",
         {
           method: "POST",
           headers: {
