@@ -249,7 +249,7 @@ const Profile = () => {
             className="space-y-4 w-[70%]"
           >
             <TextInput label="Email" {...form.getInputProps("email")} />
-            <TextInput label="Username" {...form.getInputProps("username")} />
+            <TextInput label="Fullname" {...form.getInputProps("username")} />
             <PasswordInput
               label="Password"
               {...form.getInputProps("password")}
