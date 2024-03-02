@@ -208,7 +208,10 @@ const ForgotPassword = () => {
                 <ActionIcon
                   size={40}
                   variant="default"
-                  onClick={() => setIsSuccess(false)}
+                  onClick={() => {
+                    setIsSuccess(false);
+                    dispatch(forgotFailure(null));
+                  }}
                 >
                   <MdOutlineKeyboardArrowLeft size={24} />
                 </ActionIcon>
