@@ -56,7 +56,7 @@ export const editProfile = async (req, res) => {
     }
     await user.save();
     const { password: hashedPassword, ...rest } = user._doc;
-    res.status(200).json(rest);
+    res.status(200).json({ ...rest, access_token: req.token });
   } catch (error) {
     res.status(500).json({
       success: false,

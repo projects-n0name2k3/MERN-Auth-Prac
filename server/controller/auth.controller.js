@@ -48,11 +48,7 @@ export const login = async (req, res) => {
     }
     const { password: hashedPassword, ...rest } = validUser._doc;
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
-    const expiryDate = new Date(Date.now() + 3600000);
-    res
-      .cookie("access_token", token, { httpOnly: true, expires: expiryDate })
-      .status(200)
-      .json(rest);
+    res.status(200).json({ ...rest, access_token: token });
   } catch (error) {
     return res
       .status(500)
@@ -66,36 +62,24 @@ export const google = async (req, res, next) => {
     if (user) {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
       const { password: hashedPassword, ...rest } = user._doc;
-      const expiryDate = new Date(Date.now() + 3600000); // 1 hour
-      res
-        .cookie("access_token", token, {
-          httpOnly: true,
-          expires: expiryDate,
-        })
-        .status(200)
-        .json(rest);
+      res.status(200).json({ ...rest, access_token: token });
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
         Math.random().toString(36).slice(-8);
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       const newUser = new User({
         username: req.body.username,
         email: req.body.email,
         password: hashedPassword,
         profilePicture: req.body.photo,
+        access_token: token,
       });
       await newUser.save();
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       const { password: hashedPassword2, ...rest } = newUser._doc;
       const expiryDate = new Date(Date.now() + 3600000); // 1 hour
-      res
-        .cookie("access_token", token, {
-          httpOnly: true,
-          expires: expiryDate,
-        })
-        .status(200)
-        .json(rest);
+      res.status(200).json({ ...rest, access_token: token });
     }
   } catch (error) {
     next(error);
@@ -255,6 +239,6 @@ export const resetpassword = async (req, res) => {
   }
 };
 
-export const signout = (req, res) => {
-  res.clearCookie("access_token").status(200).json("Signout successfully");
+export const signout = (res) => {
+  res.status(200).json("Signout successfully");
 };
