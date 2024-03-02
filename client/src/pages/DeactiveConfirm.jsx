@@ -44,6 +44,7 @@ const DeactiveConfirm = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: "Bearer " + currentUser.access_token,
           },
           body: JSON.stringify({ ...values, email: currentUser.email }),
         }

@@ -146,6 +146,7 @@ const Profile = () => {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: "Bearer " + currentUser.access_token,
               },
               body: JSON.stringify({ ...values, profilePicture: downloadURL }),
             }
@@ -168,6 +169,7 @@ const Profile = () => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            Authorization: "Bearer " + currentUser.access_token,
           },
           body: JSON.stringify(values),
         }
