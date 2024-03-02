@@ -68,7 +68,7 @@ export const google = async (req, res, next) => {
         Math.random().toString(36).slice(-8) +
         Math.random().toString(36).slice(-8);
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+
       const newUser = new User({
         username: req.body.username,
         email: req.body.email,
@@ -77,8 +77,8 @@ export const google = async (req, res, next) => {
         access_token: token,
       });
       await newUser.save();
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       const { password: hashedPassword2, ...rest } = newUser._doc;
-      const expiryDate = new Date(Date.now() + 3600000); // 1 hour
       res.status(200).json({ ...rest, access_token: token });
     }
   } catch (error) {
