@@ -10,6 +10,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
 import { ModalsProvider } from "@mantine/modals";
 import DeactiveConfirm from "./pages/DeactiveConfirm";
+import ProtectComponent from "./components/ProtectComponent";
 const App = () => {
   return (
     <BrowserRouter>
@@ -21,13 +22,16 @@ const App = () => {
         <ModalsProvider>
           <Header />
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<SignIn />} />
-            <Route path="/register" element={<SignUp />} />
-            <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/deactive/confirm" element={<DeactiveConfirm />} />
-            <Route path="*" element={<Home />} />
+            <Route element={<ProtectComponent />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<SignIn />} />
+              <Route path="/register" element={<SignUp />} />
+              <Route path="/forgotpassword" element={<ForgotPassword />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/deactive/confirm" element={<DeactiveConfirm />} />
+              <Route path="*" element={<Home />} />
+              <Route path="/test" element={<ProtectComponent />} />
+            </Route>
           </Routes>
         </ModalsProvider>
       </MantineProvider>
