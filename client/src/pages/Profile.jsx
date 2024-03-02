@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import usePageTitle from "../hooks/useTitle";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   Avatar,
   Box,
@@ -157,6 +159,16 @@ const Profile = () => {
             return;
           }
           dispatch(editProfileSuccess(data));
+          toast.success("Updated Successfully!", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: colorScheme,
+          });
           setPreImageSrc(image.name);
         } else {
           console.log("Duplicate image");
@@ -180,11 +192,20 @@ const Profile = () => {
         return;
       }
       dispatch(editProfileSuccess(data));
+      toast.success("Updated Successfully!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: colorScheme,
+      });
     } catch (error) {
       dispatch(editProfileFailure(error));
     }
   };
-
   return (
     <div className="font-sans">
       <div className="max-w-[1440px] mx-auto h-[calc(100vh-56px)] flex gap-4 items-center justify-center">
@@ -336,6 +357,18 @@ const Profile = () => {
           className="w-full h-full object-fit"
         />
       </Modal>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={colorScheme}
+      />
     </div>
   );
 };

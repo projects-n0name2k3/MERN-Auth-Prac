@@ -238,6 +238,6 @@ export const resetpassword = async (req, res) => {
   }
 };
 
-export const signout = (res) => {
+export const signout = (req, res) => {
   res.status(200).json({ success: true, message: "Successfully" });
 };
