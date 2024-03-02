@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutSuccess } from "../redux/user/userSlice";
-import { IoSunnyOutline } from "react-icons/io5";
+import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
 import Logo from "../assets/Logo";
 
 const Header = () => {
@@ -80,7 +80,11 @@ const Header = () => {
                 )
               }
             >
-              <IoSunnyOutline size={20} />
+              {colorScheme === "light" ? (
+                <IoSunnyOutline size={20} />
+              ) : (
+                <IoMoonOutline size={20} />
+              )}
             </ActionIcon>
           </Group>
         ) : (

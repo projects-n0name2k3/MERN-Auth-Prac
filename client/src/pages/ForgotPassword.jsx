@@ -91,6 +91,7 @@ const ForgotPassword = () => {
       }
       dispatch(forgotSuccess());
       setIsSuccess(true);
+      form.setValues({ email: "" });
     } catch (error) {
       dispatch(forgotFailure(error));
     }
@@ -110,13 +111,16 @@ const ForgotPassword = () => {
     }, 30000);
     try {
       dispatch(forgotStart());
-      const res = await fetch(`/api/auth/forgotpassword`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: tempEmail }),
-      });
+      const res = await fetch(
+        `https://mern-auth-u15p.onrender.com/api/auth/forgotpassword`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: tempEmail }),
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         dispatch(forgotFailure(data));
@@ -136,13 +140,16 @@ const ForgotPassword = () => {
     }
     try {
       dispatch(forgotStart());
-      const res = await fetch(`/api/auth/verifyOTP`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ OTP: +values.OTP, email: tempEmail }),
-      });
+      const res = await fetch(
+        `https://mern-auth-u15p.onrender.com/api/auth/verifyOTP`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ OTP: +values.OTP, email: tempEmail }),
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         dispatch(forgotFailure(data));
@@ -162,13 +169,16 @@ const ForgotPassword = () => {
     }
     try {
       dispatch(forgotStart());
-      const res = await fetch(`/api/auth/resetpassword`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password: values.password, email: tempEmail }),
-      });
+      const res = await fetch(
+        `https://mern-auth-u15p.onrender.com/api/auth/resetpassword`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ password: values.password, email: tempEmail }),
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         dispatch(forgotFailure(data));
