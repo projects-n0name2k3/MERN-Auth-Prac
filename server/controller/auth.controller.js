@@ -240,5 +240,5 @@ export const resetpassword = async (req, res) => {
 };
 
 export const signout = (res) => {
-  res.status(200).json("Signout successfully");
+  return res.status(200).json("Signout successfully");
 };
