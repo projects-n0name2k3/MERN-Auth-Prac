@@ -92,6 +92,18 @@ export const deactiveAccount = async (req, res) => {
       }
       await User.deleteOne({ email: req.body.email });
       res.status(200).json("Deactived successfully");
+    } else {
+      if (user.isGoogle) {
+        await User.deleteOne({ email: req.body.email });
+        res.status(200).json("Deactived successfully");
+      } else {
+        return res
+          .status(403)
+          .json({
+            success: false,
+            message: "You can only deactive your own profile",
+          });
+      }
     }
   } catch (error) {
     res.status(500).json({

@@ -249,7 +249,7 @@ const Profile = () => {
             "Content-Type": "application/json",
             Authorization: "Bearer " + currentUser.access_token,
           },
-          body: JSON.stringify({ ...values, email: currentUser.email }),
+          body: JSON.stringify({ email: currentUser.email }),
         }
       );
       const data = await res.json();
@@ -390,11 +390,11 @@ const Profile = () => {
                           className="mt-3"
                           ref={deactiveBtn}
                           onClick={() => {
-                            if (currentUser.isGoogle) {
+                            if (!currentUser.isGoogle) {
                               modals.closeAll();
                               navigate("/deactive/confirm");
                             } else {
-                              handleDeactive;
+                              handleDeactive();
                             }
                           }}
                         >
