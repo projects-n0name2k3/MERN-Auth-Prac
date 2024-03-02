@@ -204,6 +204,34 @@ const Profile = () => {
             theme: colorScheme,
           });
         }
+      } else {
+        const res = await fetch(
+          `https://mern-auth-u15p.onrender.com/api/user/edit/${currentUser._id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + currentUser.access_token,
+            },
+            body: JSON.stringify(values),
+          }
+        );
+        const data = await res.json();
+        if (data.success === false) {
+          dispatch(editProfileFailure(data));
+          return;
+        }
+        dispatch(editProfileSuccess(data));
+        toast.success("Updated Successfully!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: colorScheme,
+        });
       }
     } catch (error) {
       dispatch(editProfileFailure(error));
