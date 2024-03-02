@@ -4,7 +4,8 @@ import { Button, Group } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 import MobileBg from "../assets/MobileBg";
-import { GooglePlayButton, AppStoreButton } from "react-mobile-app-button";
+import IOSBtn from "../assets/IOSBtn";
+import ANDBtn from "../assets/ANDBtn";
 export default function Home() {
   usePageTitle("Home");
 
@@ -46,8 +47,8 @@ export default function Home() {
       </span>
     </div>
   ) : (
-    <div className="min-h-screen flex items-center justify-center flex-col text-center relative px-4">
-      <MobileBg className="absolute" />
+    <div className="h-full flex items-center justify-center flex-col text-center relative px-4">
+      <MobileBg className="absolute h-full" />
       <div className="absolute z-50 flex flex-col items-center justify-between h-[60%]">
         <h1 className={`text-3xl font-bold  text-white`}>
           Welcome to my app !
@@ -67,16 +68,10 @@ export default function Home() {
           </p>
         </div>
         <Group className="mt-12">
-          <GooglePlayButton url={""} theme={"dark"} className={"scale-[.80]"} />
-          <AppStoreButton
-            url={""}
-            theme={"dark"}
-            className={"scale-[.80] iosBtn"}
-          />
+          <ANDBtn />
+          <IOSBtn />
         </Group>
-        <span className="text-white/50 text-sm left-[50%] translate-x-[-50%] fixed bottom-[10%]">
-          Created by n0name2k3
-        </span>
+        <span className="text-white/50 text-sm">Created by n0name2k3</span>
       </div>
     </div>
   );
