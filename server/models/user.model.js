@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema(
     lastWrongAttempt: {
       type: Date,
     },
+    isGoogle: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

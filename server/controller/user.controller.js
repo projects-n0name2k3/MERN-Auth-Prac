@@ -44,6 +44,7 @@ export const editProfile = async (req, res) => {
       if (password.trim().length >= 6) {
         const hashedPassword = bcryptjs.hashSync(password, 10);
         user.password = hashedPassword;
+        if (user.isGoogle) user.isGoogle = false;
       } else {
         return res.status(403).json({
           success: false,
@@ -90,10 +91,7 @@ export const deactiveAccount = async (req, res) => {
           .json({ success: false, message: "Invalid Credentials" });
       }
       await User.deleteOne({ email: req.body.email });
-      res
-        .clearCookie("access_token")
-        .status(200)
-        .json("Deactived successfully");
+      res.status(200).json("Deactived successfully");
     }
   } catch (error) {
     res.status(500).json({

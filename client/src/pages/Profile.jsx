@@ -30,11 +30,15 @@ import { useNavigate } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import { checkPassword } from "../utils/helper";
 import {
+  deactiveFailure,
+  deactiveStart,
+  deactiveSuccess,
   editProfileFailure,
   editProfileStart,
   editProfileSuccess,
 } from "../redux/user/userSlice";
 import ErrorBanner from "../components/ErrorBanner";
+
 const Profile = () => {
   usePageTitle("Profile");
   const { currentUser, error } = useSelector((state) => state.user);
@@ -172,38 +176,63 @@ const Profile = () => {
           setPreImageSrc(image.name);
         } else {
           console.log("Duplicate image");
-          return;
+          const res = await fetch(
+            `https://mern-auth-u15p.onrender.com/api/user/edit/${currentUser._id}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + currentUser.access_token,
+              },
+              body: JSON.stringify(values),
+            }
+          );
+          const data = await res.json();
+          if (data.success === false) {
+            dispatch(editProfileFailure(data));
+            return;
+          }
+          dispatch(editProfileSuccess(data));
+          toast.success("Updated Successfully!", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: colorScheme,
+          });
         }
       }
+    } catch (error) {
+      dispatch(editProfileFailure(error));
+    }
+  };
+  const handleDeactive = async () => {
+    modals.closeAll();
+    try {
+      dispatch(deactiveStart());
       const res = await fetch(
-        `https://mern-auth-u15p.onrender.com/api/user/edit/${currentUser._id}`,
+        `https://mern-auth-u15p.onrender.com/api/user/deactive/${currentUser._id}`,
         {
-          method: "PATCH",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + currentUser.access_token,
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify({ ...values, email: currentUser.email }),
         }
       );
       const data = await res.json();
       if (data.success === false) {
-        dispatch(editProfileFailure(data));
+        dispatch(deactiveFailure(data));
         return;
       }
-      dispatch(editProfileSuccess(data));
-      toast.success("Updated Successfully!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: colorScheme,
-      });
+      dispatch(deactiveSuccess());
+      navigate("/login");
     } catch (error) {
-      dispatch(editProfileFailure(error));
+      dispatch(deactiveFailure(error));
     }
   };
   return (
@@ -333,8 +362,12 @@ const Profile = () => {
                           className="mt-3"
                           ref={deactiveBtn}
                           onClick={() => {
-                            navigate("/deactive/confirm");
-                            modals.closeAll();
+                            if (currentUser.isGoogle) {
+                              modals.closeAll();
+                              navigate("/deactive/confirm");
+                            } else {
+                              handleDeactive;
+                            }
                           }}
                         >
                           Deactive my account
