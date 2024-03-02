@@ -68,7 +68,7 @@ const DeactiveConfirm = () => {
     >
       <div
         className={`max-w-[1440px] w-[500px] min-h-48 shadow-lg rounded-lg ${
-          colorScheme === "dark" && "border border-white/20"
+          colorScheme === "dark" ? "border border-white/20" : "bg-white"
         } p-3 flex flex-col items-center gap-4`}
       >
         <h1 className="text-center text-2xl ">Confirm access</h1>

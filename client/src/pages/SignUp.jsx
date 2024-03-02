@@ -101,7 +101,7 @@ const SignUp = () => {
               <TextInput
                 withAsterisk
                 label="Fullname"
-                placeholder="Enter your Username"
+                placeholder="Enter your Fullname"
                 {...form.getInputProps("username")}
               />
               <PasswordInput

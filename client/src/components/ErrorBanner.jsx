@@ -8,7 +8,7 @@ const ErrorBanner = ({ message }) => {
     <div
       className={`${
         colorScheme === "dark" ? "border border-red-500" : "bg-red-100"
-      } p-3 my-4 rounded-lg w-[80%]`}
+      } p-3 my-4 rounded-lg w-full`}
     >
       <span className="text-sm font-medium text-red-500">{message}</span>
     </div>
