@@ -109,7 +109,11 @@ const Header = () => {
                 )
               }
             >
-              <IoSunnyOutline size={20} />
+              {colorScheme === "light" ? (
+                <IoSunnyOutline size={20} />
+              ) : (
+                <IoMoonOutline size={20} />
+              )}
             </ActionIcon>
           </div>
         )}
