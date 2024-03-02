@@ -18,3 +18,7 @@
 .mantine-Modal-header {
     padding: 6px 0px 6px 8px;
 }
+
+.iosBtn {
+    width: 179px !important;
+}
